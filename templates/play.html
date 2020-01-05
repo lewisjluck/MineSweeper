@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block title %}Play Minesweeper{% endblock %}
+
+{% block body %}
+
+  <div oncontextmenu="return false;" class="grid container">
+    {% for i in range(d) %}
+      <div class="row">
+        {% for j in range(d) %}
+          {% if j%2 == i%2 %}
+            <div class="col-sm d" id="{{i * d + j}}"></div>
+          {% else %}
+            <div class="col-sm g" id="{{i * d + j}}"></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <style media="screen">
+    .row {
+      height: {{100/d}}%;
+    }
+
+    .row div {
+      width: {{100/d}}%;
+      line-height: {{100/d}}%;
+      font-size: {{80/d*0.8}}vmin;
+    }
+
+    #nav-play {
+      color: rgb(255, 255, 255, .75);
+    }
+  </style>
+  <script src="../static/game-support.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    var dimensions = {{d}};
+    var grid = undefined;
+    var count = 0
+    var revealed = []
+    $(".col-sm").click(function() {
+      if (count == 0) {
+        grid = getGrid(dimensions, parseInt($(this).attr("id")));
+        console.log(dimensions, $(this).attr("id"));
+        count ++;
+      } else {
+        count ++;
+      }
+      revealTile.call(this, grid);
+      revealed.push($(this).attr("id"));
+    });
+    $(".col-sm").contextmenu(function() {
+      plantFlag.call(this, grid, revealed);
+    });
+  });
+  </script>
+
+
+{% endblock %}

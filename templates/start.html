@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}Play Minesweeper{% endblock %}
+
+{% block body %}
+  <style media="screen">
+    #nav-play {
+      color: rgb(255, 255, 255, .75);
+    }
+  </style>
+  <form action="/play" method="post">
+    <h3>Ready to Play Minesweeper?</h3>
+    <h4>Select your difficulty below!</h4>
+    <div class="form-group">
+      <select class="form-control" name="difficulty">
+        <option value="6">Easy</option>
+        <option value="12">Medium</option>
+        <option value="20">Hard</option>
+        <option value="24">Insane</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Play Minesweeper Now!</button>
+  </form>
+{% endblock %}

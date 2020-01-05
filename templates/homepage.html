@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block title %} Welcome to Minesweeper {% endblock %}
+
+{% block body %}
+<div class="container justify-content-center" id="homepage-container">
+    <h1 class="mx-auto"> Welcome to MineSweeper!</h1>
+    <p class="mx-auto">Inspired by the classic arcade game, we hope you enjoy our modern adaptation.</p>
+    <img src="../static/fck-minesweeper.jpg" alt="classic image" id="homepage-image">
+</div>
+<div class="container button-container">
+  <a href="/play"><button class="btn btn-dark" type="button" name="button">Play Now!</button></a>
+</div>
+{% endblock %}

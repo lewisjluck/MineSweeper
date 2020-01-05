@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/detail.css">
+
+    <link rel="icon" href="../static/flag_icon.png">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    <header class="navbar fixed-top bg-dark navbar-expand-md navbar-dark">
+      <a href="/" class="navbar-brand heading-container">
+        <img src="../static/flag_icon.png" width="36" height="36" class="d-inline-block" style="margin-right: 12px">
+        <span class="text-primary">M</span><span class="text-success">i</span><span class="text-danger">n</span><span class="text-warning">e</span><span>sweeper</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="main-nav">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" id="nav-play" href="/play">Play</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="nav-score" href="/scores">High Scores</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" id="nav-signup" href="/register">Sign up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="nav-login" href="/login">Login</a>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <main>
+      <div class="container-fluid">
+        {% block body %}
+        {% endblock %}
+      </div>
+    </main>
+    <!--<footer>
+      Made by Lewis Luck, 2020 <br>
+      &copy Fortune Inc.
+    </footer>
+  -->
+  </body>
+</html>

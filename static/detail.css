@@ -1,0 +1,72 @@
+main {
+  padding-top: 80px;
+  text-align: center;
+}
+
+#homepage-image {
+  max-width: 70%;
+  margin: auto;
+}
+
+#homepage-container {
+  width: 70vw;
+}
+
+.button-container {
+  margin-top: 25px
+}
+
+.d {
+  background-color: rgb(162, 209, 73);
+}
+
+.g {
+  background-color: rgb(170, 215, 81);
+}
+
+.d-b {
+  background-color: rgb(215, 184, 153);
+}
+
+.l-b {
+  background-color: rgb(229, 194, 159);
+}
+
+.grid {
+  max-width: 700px;
+  max-height: 700px;
+  width: 80vw;
+  height: 80vw;
+  margin: auto;
+  border: solid;
+  border-width: 10px;
+  border-color: rgb(51, 57, 64);
+}
+
+.row div {
+  padding: 0;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.flag {
+  background-image: url("../static/flag_icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  background-size: contain;
+}
+
+form {
+  width: 70%;
+  margin: auto;
+}
+
+footer {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  text-align: center;
+}
