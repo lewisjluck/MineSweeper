@@ -1,0 +1,6 @@
+python3
+Flask
+jquery
+javascript ver. 9 (aka ECMAScript 2019)
+css3
+html5
