@@ -39,19 +39,38 @@
     var grid = undefined;
     var count = 0
     var revealed = []
+    var flagged = []
     $(".col-sm").click(function() {
       if (count == 0) {
         grid = getGrid(dimensions, parseInt($(this).attr("id")));
-        console.log(dimensions, $(this).attr("id"));
+        gaps = getGaps(grid, dimensions)
+        console.log(gaps);
         count ++;
       } else {
         count ++;
       }
-      revealTile.call(this, grid);
-      revealed.push($(this).attr("id"));
+      id = $(this).attr("id")
+      if (!revealed.includes(id) || !flagged.includes(id)) {
+        gapsArray = undefined;
+        for (y = 0; y < gaps.length; y++) {
+          if (masterGaps[y].includes(parseInt(id))) {
+            gapsArray = y;
+          }
+        }
+        if (gapsArray != undefined) {
+          for (i = 0; i < gaps[gapsArray].length; i++) {
+            revealTile(gaps[gapsArray][i].toString(), grid);
+            revealed.push(gaps[gapsArray][i].toString());
+          }
+        } else {
+          revealTile(id, grid);
+          revealed.push(id);
+        }
+      }
     });
     $(".col-sm").contextmenu(function() {
       plantFlag.call(this, grid, revealed);
+      flagged.push($(this).attr("id"));
     });
   });
   </script>

@@ -63,13 +63,6 @@ function getGrid(d, p) {
       temp += grid[y].toString();
     }
   }
-  var zeroes = [];
-  for (y = 0; y < grid.length; y++) {
-    if (grid[y] == 0) {
-      zeroes.push(y);
-    }
-  }
-  console.log(zeroes);
   return grid
 }
 
@@ -79,14 +72,14 @@ function plantFlag(grid, revealed) {
   }
 }
 
-function revealTile(grid) {
-  if ($(this).hasClass("g")) {
-    $(this).addClass("l-b");
+function revealTile(id, grid) {
+  if ($("#" + id).hasClass("g")) {
+    $("#" + id).addClass("l-b");
   } else {
-    $(this).addClass("d-b");
+    $("#" + id).addClass("d-b");
   }
   colour = "";
-  text = grid[$(this).attr("id")].toString();
+  text = grid[parseInt(id)].toString();
   switch (text) {
     case '0':
       text = "";
@@ -121,6 +114,200 @@ function revealTile(grid) {
     default:
       break;
   }
-  $(this).css("color", colour);
-  $(this).text(text);
+  $("#" + id).css("color", colour);
+  $("#" + id).text(text);
+}
+
+function getGaps(grid, d) {
+  masterGaps = [];
+  for (i = 0; i < grid.length; i++) {
+    already = undefined;
+    for (j = 0; j< masterGaps.length; j++) {
+      if (masterGaps[j].includes(i)) {
+        already = true;
+      } else {
+        already = false;
+      }
+    }
+    if (grid[i] == 0 && !already) {
+      gaps = []
+      masterGaps.push(DFS(grid, i, gaps, d));
+    }
+  }
+  for (i = 0; i < d; i++) {
+    for (j = 0; j < d; j++) {
+      index = i * d + j
+      if (grid[index] == 0) {
+        gapsArray = undefined;
+        for (y = 0; y < masterGaps.length; y++) {
+          if (masterGaps[y].includes(index)) {
+            gapsArray = y;
+          }
+        }
+        if (grid[index + 1] != 0 && j != d - 1) {
+          if (!masterGaps[gapsArray].includes(index + 1)){
+            masterGaps[gapsArray].push(index + 1);
+          }
+        }
+        if (i < d - 1 && j < d - 2) {
+          if (grid[index + d + 1] == 0 && grid[index + 1] != 0) {
+            if (!masterGaps[gapsArray].includes(index + 2)){
+              masterGaps[gapsArray].push(index + 2);
+            }
+          }
+        }
+        if (i != 0 && j < d - 2) {
+          if (grid[index - d + 1] == 0 && grid[index + 1] != 0) {
+            if (!masterGaps[gapsArray].includes(index + 2)){
+              masterGaps[gapsArray].push(index + 2);
+            }
+          }
+        }
+        if (grid[index - 1] != 0 && j != 0) {
+          if (!masterGaps[gapsArray].includes(index - 1)){
+            masterGaps[gapsArray].push(index - 1);
+          }
+        }
+        if (i < d - 1 && j > 1) {
+          if (grid[index + d - 1] == 0 && grid[index - 1] != 0) {
+            if (!masterGaps[gapsArray].includes(index - 2)){
+              masterGaps[gapsArray].push(index - 2);
+            }
+          }
+        }
+        if (i != 0 && j > 1) {
+          if (grid[index - d - 1] == 0 && grid[index - 1] != 0) {
+            if (!masterGaps[gapsArray].includes(index - 2)){
+              masterGaps[gapsArray].push(index - 2);
+            }
+          }
+        }
+      } else {
+        if (i != d - 1) {
+          if (grid[index + d] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index + d)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+        if (i != d - 1 && j != d-1) {
+          if (grid[index + d + 1] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index + d + 1)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+        if (i != d - 1 && j != 0) {
+          if (grid[index + d - 1] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index + d - 1)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+        if (i != 0) {
+          if (grid[index - d] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index - d)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+        if (i != 0 && j != d-1) {
+          if (grid[index - d + 1] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index - d + 1)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+        if (i != 0 && j != 0) {
+          if (grid[index - d - 1] == 0) {
+            gapsArray = undefined;
+            for (y = 0; y < masterGaps.length; y++) {
+              if (masterGaps[y].includes(index - d - 1)) {
+                gapsArray = y;
+              }
+            }
+            if (!masterGaps[gapsArray].includes(index)){
+              masterGaps[gapsArray].push(index);
+            }
+          }
+        }
+      }
+    }
+  }
+  return masterGaps;
+}
+
+function DFS(grid, i, gaps, d) {
+  gaps.push(i);
+  if (i % d != 0) {
+    if (grid[i-1] == 0 && !gaps.includes(i-1)) {
+      gaps = gaps.concat(DFS(grid, i-1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+    }
+  }
+  if (i < Math.pow(d, 2) - d) {
+    if (grid[i+d] == 0 && !gaps.includes(i+d)) {
+      gaps = gaps.concat(DFS(grid, i+d, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+    }
+    if (i % d != 0) {
+      if (grid[i+d-1] == 0 && !gaps.includes(i+d-1)) {
+        gaps = gaps.concat(DFS(grid, i+d-1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+      }
+    }
+    if (i % d != d - 1) {
+      if (grid[i+d+1] == 0 && !gaps.includes(i+d+1)) {
+        gaps = gaps.concat(DFS(grid, i+d+1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+      }
+    }
+  }
+  if (i % d != d-1) {
+    if (grid[i+1] == 0 && !gaps.includes(i+1)) {
+      gaps = gaps.concat(DFS(grid, i+1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+    }
+  }
+  if (i >= d) {
+    if (grid[i-d] == 0 && !gaps.includes(i-d)) {
+      gaps = gaps.concat(DFS(grid, i-d, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+    }
+    if (i % d != 0) {
+      if (grid[i-d-1] == 0 && !gaps.includes(i-d-1)) {
+        gaps = gaps.concat(DFS(grid, i-d-1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+      }
+    }
+    if (i % d != d - 1) {
+      if (grid[i-d+1] == 0 && !gaps.includes(i-d+1)) {
+        gaps = gaps.concat(DFS(grid, i-d+1, gaps, d).filter((item) => gaps.indexOf(item) < 0));
+      }
+    }
+  }
+  return gaps;
 }

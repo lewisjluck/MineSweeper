@@ -1,4 +1,4 @@
-from random import random
+from random import random`
 
 def getGrid(dimensions, pointer):
     p = [pointer, pointer - 1, pointer + 1, pointer - dimensions, ]
