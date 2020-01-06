@@ -66,12 +66,6 @@ function getGrid(d, p) {
   return grid
 }
 
-function plantFlag(grid, revealed) {
-  if (!revealed.includes($(this).attr("id"))) {
-    $(this).toggleClass("flag");
-  }
-}
-
 function revealTile(id, grid) {
   if ($("#" + id).hasClass("g")) {
     $("#" + id).addClass("l-b");
@@ -108,9 +102,6 @@ function revealTile(id, grid) {
     case '8':
       colour = "silver";
       break;
-    case '*':
-      //game over bro!
-      break;
     default:
       break;
   }
@@ -121,12 +112,10 @@ function revealTile(id, grid) {
 function getGaps(grid, d) {
   masterGaps = [];
   for (i = 0; i < grid.length; i++) {
-    already = undefined;
+    already = false;
     for (j = 0; j< masterGaps.length; j++) {
       if (masterGaps[j].includes(i)) {
         already = true;
-      } else {
-        already = false;
       }
     }
     if (grid[i] == 0 && !already) {
@@ -310,4 +299,26 @@ function DFS(grid, i, gaps, d) {
     }
   }
   return gaps;
+}
+
+function gameOver(grid, index) {
+  bombs = [];
+  for (i = 0; i < grid.length; i++) {
+    if (grid[i] == "*") {
+      bombs.push(i);
+    }
+  }
+  $("#" + index).addClass("bomb image");
+  bombs.splice((bombs.indexOf(index) - 2), 1);
+  timerStatus = setInterval(function () {
+    $("#" + bombs.splice((Math.round(Math.random * bombs.length), 0) - 1).toString()).addClass("bomb image");
+    if (bombs.length == 0 ) {
+      clearInterval(timerStatus);
+    }
+  }, 1000);
+
+}
+
+function revealZero(grid, index) {
+
 }

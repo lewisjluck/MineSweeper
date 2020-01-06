@@ -3,7 +3,9 @@
 {% block title %}Play Minesweeper{% endblock %}
 
 {% block body %}
-
+  <div class="timer row bg-dark">
+    0
+  </div>
   <div oncontextmenu="return false;" class="grid container">
     {% for i in range(d) %}
       <div class="row">
@@ -46,15 +48,24 @@
         gaps = getGaps(grid, dimensions)
         console.log(gaps);
         count ++;
-      } else {
-        count ++;
+        timer = 0;
+        setInterval(function () {
+          $(".timer").text(timer.toString());
+          timer ++;
+        }, 1000);
       }
       id = $(this).attr("id")
-      if (!revealed.includes(id) || !flagged.includes(id)) {
+      if (!revealed.includes(id) && !flagged.includes(id)) {
         gapsArray = undefined;
         for (y = 0; y < gaps.length; y++) {
-          if (masterGaps[y].includes(parseInt(id))) {
-            gapsArray = y;
+          if (gaps[y].includes(parseInt(id)) && grid[parseInt(id)] == 0) {
+            for (i = 0; i < flagged.length; i++) {
+              if (gaps[y].includes(parseInt(flagged[i]))) {
+                $("#" + flagged[i].toString()).removeClass("flag");
+                flagged.pop(i);
+              }
+            }
+            gapsArray = y
           }
         }
         if (gapsArray != undefined) {
@@ -62,6 +73,8 @@
             revealTile(gaps[gapsArray][i].toString(), grid);
             revealed.push(gaps[gapsArray][i].toString());
           }
+        } else if (grid[parseInt(id)] == '*') {
+          gameOver(grid, id);
         } else {
           revealTile(id, grid);
           revealed.push(id);
@@ -69,8 +82,17 @@
       }
     });
     $(".col-sm").contextmenu(function() {
-      plantFlag.call(this, grid, revealed);
-      flagged.push($(this).attr("id"));
+      id = $(this).attr("id");
+      if (!revealed.includes(id)) {
+        if (flagged.includes(id)) {
+          flagged.pop(flagged.indexOf(id));
+          $(this).removeClass("flag image");
+        } else {
+          flagged.push(id);
+          $(this).addClass("flag image");
+        }
+      }
+
     });
   });
   </script>

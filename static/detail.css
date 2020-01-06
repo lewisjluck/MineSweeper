@@ -32,11 +32,23 @@ main {
   background-color: rgb(229, 194, 159);
 }
 
+.timer {
+  width: 80vmin;
+  margin: auto;
+  color: white;
+  text-align: center;
+  line-height: 5vmin;
+  font-size: 5vmin;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  padding: 1vmin;
+}
+
 .grid {
-  max-width: 700px;
-  max-height: 700px;
-  width: 80vw;
-  height: 80vw;
+  width: 80vmin;
+  height: 80vmin;
   margin: auto;
   border: solid;
   border-width: 10px;
@@ -53,6 +65,13 @@ main {
 
 .flag {
   background-image: url("../static/flag_icon.png");
+}
+
+.bomb {
+  background-image: url("../static/bomb.png");
+}
+
+.image {
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
