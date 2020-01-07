@@ -3,17 +3,21 @@
 {% block title %}Play Minesweeper{% endblock %}
 
 {% block body %}
-  <div class="timer row bg-dark">
-    0
+  <div id="overlay">
+
+  </div>
+  <div class="timer bg-dark">
+    <img src="../static/deadline.png" alt="Timer Icon">
+    <span id="timer">0</span>
   </div>
   <div oncontextmenu="return false;" class="grid container">
     {% for i in range(d) %}
       <div class="row">
         {% for j in range(d) %}
           {% if j%2 == i%2 %}
-            <div class="col-sm d" id="{{i * d + j}}"></div>
+            <div class="col-sm d inplay" id="{{i * d + j}}"></div>
           {% else %}
-            <div class="col-sm g" id="{{i * d + j}}"></div>
+            <div class="col-sm g inplay" id="{{i * d + j}}"></div>
           {% endif %}
         {% endfor %}
       </div>
@@ -42,57 +46,83 @@
     var count = 0
     var revealed = []
     var flagged = []
+    var stopped = false;
     $(".col-sm").click(function() {
-      if (count == 0) {
-        grid = getGrid(dimensions, parseInt($(this).attr("id")));
-        gaps = getGaps(grid, dimensions)
-        console.log(gaps);
-        count ++;
-        timer = 0;
-        setInterval(function () {
-          $(".timer").text(timer.toString());
-          timer ++;
-        }, 1000);
-      }
-      id = $(this).attr("id")
-      if (!revealed.includes(id) && !flagged.includes(id)) {
-        gapsArray = undefined;
-        for (y = 0; y < gaps.length; y++) {
-          if (gaps[y].includes(parseInt(id)) && grid[parseInt(id)] == 0) {
-            for (i = 0; i < flagged.length; i++) {
-              if (gaps[y].includes(parseInt(flagged[i]))) {
-                $("#" + flagged[i].toString()).removeClass("flag");
-                flagged.pop(i);
+      if (!stopped) {
+        if (count == 0) {
+          grid = getGrid(dimensions, parseInt($(this).attr("id")));
+          gaps = getGaps(grid, dimensions)
+          count ++;
+          timer = 1;
+          timing = setInterval(function () {
+            $("#timer").text(timer.toString());
+            timer ++;
+          }, 1000);
+        }
+        id = $(this).attr("id")
+        if (!revealed.includes(id) && !flagged.includes(id)) {
+          gapsArray = undefined;
+          for (y = 0; y < gaps.length; y++) {
+            if (gaps[y].includes(parseInt(id)) && grid[parseInt(id)] == 0) {
+              for (i = 0; i < flagged.length; i++) {
+                if (gaps[y].includes(parseInt(flagged[i]))) {
+                  $("#" + flagged[i].toString()).removeClass("flag");
+                  flagged.pop(i);
+                }
+              }
+              gapsArray = y
+            }
+          }
+          if (gapsArray != undefined) {
+            for (i = 0; i < gaps[gapsArray].length; i++) {
+              revealTile(gaps[gapsArray][i].toString(), grid);
+              if (!revealed.includes(gaps[gapsArray][i].toString())) {
+                revealed.push(gaps[gapsArray][i].toString());
               }
             }
-            gapsArray = y
+          } else if (grid[parseInt(id)] == '*') {
+            stopped = true;
+            clearInterval(timing);
+            gameOver(grid, id, flagged);
+          } else {
+            revealTile(id, grid);
+            if (!revealed.includes(id)) {
+              revealed.push(id)
+            }
           }
-        }
-        if (gapsArray != undefined) {
-          for (i = 0; i < gaps[gapsArray].length; i++) {
-            revealTile(gaps[gapsArray][i].toString(), grid);
-            revealed.push(gaps[gapsArray][i].toString());
+          not = []
+          for (i = 0; i < grid.length; i++) {
+            if (!flagged.includes(i.toString()) && !revealed.includes(i.toString()))
+              not.push(i)
           }
-        } else if (grid[parseInt(id)] == '*') {
-          gameOver(grid, id);
-        } else {
-          revealTile(id, grid);
-          revealed.push(id);
+          if (revealed.length + flagged.length == grid.length) {
+            stopped = true;
+            clearInterval(timing);
+            time = $("#timer").text();
+            presentMessage("Congratulations! <br> You won with a score of " + time + "!");
+          }
         }
       }
     });
     $(".col-sm").contextmenu(function() {
-      id = $(this).attr("id");
-      if (!revealed.includes(id)) {
-        if (flagged.includes(id)) {
-          flagged.pop(flagged.indexOf(id));
-          $(this).removeClass("flag image");
-        } else {
-          flagged.push(id);
-          $(this).addClass("flag image");
+      if (!stopped) {
+        id = $(this).attr("id");
+        if (!revealed.includes(id)) {
+          if (flagged.includes(id)) {
+            flagged.pop(flagged.indexOf(id));
+            $(this).removeClass("flag image");
+          } else {
+            flagged.push(id);
+            $(this).addClass("flag image");
+          }
+        }
+        if (revealed.length + flagged.length == grid.length) {
+          stopped = true;
+          clearInterval(timing);
+          time = $("#timer").text();
+          presentMessage("Congratulations! <br> You won with a score of " + time + "!");
         }
       }
-
     });
   });
   </script>

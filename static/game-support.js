@@ -2,7 +2,7 @@ function getGrid(d, p) {
   var no = [p, p - 1, p + 1, p - d, p - d - 1, p - d + 1, p + d + 1, p + d, p + d - 1]
   var grid = []
   for (i = 0; i < Math.pow(d, 2); i++) {
-    if (Math.round(Math.random()*2) == 0 && !no.includes(i)) {
+    if (Math.round(Math.random()*3) == 0 && !no.includes(i)) {
       grid.push('*');
     } else {
       grid.push(0);
@@ -79,7 +79,7 @@ function revealTile(id, grid) {
       text = "";
       break;
     case '1':
-      colour = "blue";
+      colour = "royalblue";
       break;
     case '2':
       colour = "green";
@@ -91,7 +91,7 @@ function revealTile(id, grid) {
       colour = "purple";
       break;
     case '5':
-      colour = "orange";
+      colour = "darkorange";
       break;
     case '6':
       colour = "yellow";
@@ -107,6 +107,7 @@ function revealTile(id, grid) {
   }
   $("#" + id).css("color", colour);
   $("#" + id).text(text);
+  $("#" + id).removeClass("inplay")
 }
 
 function getGaps(grid, d) {
@@ -301,24 +302,26 @@ function DFS(grid, i, gaps, d) {
   return gaps;
 }
 
-function gameOver(grid, index) {
+function gameOver(grid, index, flagged) {
   bombs = [];
   for (i = 0; i < grid.length; i++) {
-    if (grid[i] == "*") {
+    if (grid[i] == "*" && !flagged.includes(i.toString())) {
       bombs.push(i);
     }
   }
+  interval = 5000/bombs.length
   $("#" + index).addClass("bomb image");
-  bombs.splice((bombs.indexOf(index) - 2), 1);
+  bombs.splice(bombs.indexOf(parseInt(index)), 1);
   timerStatus = setInterval(function () {
-    $("#" + bombs.splice((Math.round(Math.random * bombs.length), 0) - 1).toString()).addClass("bomb image");
-    if (bombs.length == 0 ) {
+    $("#" + bombs.splice((Math.round(Math.random() * bombs.length)), 1).toString()).addClass("bomb image");
+    if (bombs.length == 0) {
       clearInterval(timerStatus);
+      presentMessage("Game Over! ");
     }
-  }, 1000);
-
+  }, interval);
 }
 
-function revealZero(grid, index) {
-
+function presentMessage(message) {
+  $("#overlay").css("display", "flex");
+  $("#overlay").append("<span id=\"message\">" + message + "<br> <a href=\"play\">Play Again?</a></span>");
 }
