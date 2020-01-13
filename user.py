@@ -34,4 +34,5 @@ class User(UserMixin):
     def sign_in(id, username, email, pic):
         if not User.get(id):
             User.create(id, username, email, pic)
+            db.execute("SELECT * FROM users WHERE id=?")
         return User(id, username, email, pic)
