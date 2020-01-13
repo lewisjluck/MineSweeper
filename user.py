@@ -28,7 +28,9 @@ class User(UserMixin):
     @staticmethod
     def create(id_, username, email, profile_pic=None, hash=None):
         db = get_db()
+        db.commit()
         db.execute("INSERT INTO users (id, username, email, profile_pic, hash) VALUES (?, ?, ?, ?, ?)", (id_, username, email, profile_pic, hash,))
+        db.commit()
 
     @staticmethod
     def sign_in(id, username, email, pic):

@@ -36,11 +36,6 @@ client = WebApplicationClient(GOOGLE_CLIENT_ID)
 # Flask Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "/login"
-
-@login_manager.user_loader
-def get_user(user_id):
-    return User.get(user_id)
 
 @app.route("/")
 def index():
@@ -62,7 +57,7 @@ def scores():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    user = User.sign_in(3, "Lewis", "lewisluck2003@gmail.com", "Big daddy")
+    user = User.sign_in("Lewis", "lewisluck2003", "lewisluck2003@gmail.com", "Big Daddy")
     login_user(user)
     return render_template("login.html")
 
@@ -75,6 +70,7 @@ def call():
         redirect_uri=request.base_url + "/back",
         scope=["openid", "email", "profile"]
     )
+    print(request.base_url + "/back")
     return redirect(request_uri)
 
 @app.route("/login/call/back", methods=["GET", "POST"])
@@ -106,13 +102,12 @@ def callback():
     else:
         return render_template("error.html", message="User email not available or not verified by Google.", address="/login")
     print(unique_id, users_name, users_email, picture)
-    login_user(User.sign_in(unique_id, users_name, users_email, picture))
+    User.sign_in(unique_id, users_name, users_email, picture)
     return redirect("/profile")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     return render_template("error.html", message="This page is still in development.", address="/")
-
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -122,11 +117,10 @@ def profile():
             "<div><p>Google Profile Picture:</p>"
             '<img src="{}" alt="Google profile pic"></img></div>'
             '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.username, current_user.email, current_user.profile_pic
+                current_user.name, current_user.email, current_user.profile_pic
             )
         )
-    else:
-        return render_template("error.html", message="This page is still in development.", address="/")
+    # return render_template("error.html", message="This page is still in development.", address="/")
 
-if __name__ == "__main__":
-   app.run(debug=True)
+#if __name__ == "__main__":
+ #   app.run(debug=True, ssl_context=("cert.pem", "key.pem"))
