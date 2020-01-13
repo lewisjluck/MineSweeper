@@ -109,13 +109,14 @@
         id = $(this).attr("id");
         if (!revealed.includes(id)) {
           if (flagged.includes(id)) {
-            flagged.pop(flagged.indexOf(id));
+            flagged.splice(flagged.indexOf(id), 1);
             $(this).removeClass("flag image");
           } else {
             flagged.push(id);
             $(this).addClass("flag image");
           }
         }
+        console.log(flagged);
         if (revealed.length + flagged.length == grid.length) {
           stopped = true;
           clearInterval(timing);

@@ -34,12 +34,18 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
+          <li class="profile">
+            <a class="nav-link" id="nav-profile" href="/profile">Profile</a>
+          </li>
+          {% else %}
           <li class="nav-item">
             <a class="nav-link" id="nav-signup" href="/register">Sign up</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="nav-login" href="/login">Login</a>
           </li>
+          {% endif %}
         </ul>
       </div>
     </header>
