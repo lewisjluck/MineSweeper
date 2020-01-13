@@ -57,13 +57,16 @@ def play():
             return render_template("play.html", d=int(request.form.get("difficulty")))
 
 @app.route("/scores")
+@login_required
 def scores():
     return render_template("error.html", message="This page is still in development.", address="/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    user = User.sign_in(3, "Lewis", "lewisluck2003@gmail.com", "Big daddy")
+    user = User.sign_in(3, "Lewis", "lewisluck2003@gmail.com", "http://tolkiengateway.net/w/images/thumb/1/15/Born_of_Hope_-_Arathorn.jpg/250px-Born_of_Hope_-_Arathorn.jpg")
     login_user(user)
+    print(user.profile_pic)
+    print(current_user.profile_pic)
     return render_template("login.html")
 
 @app.route("/login/call", methods=["GET", "POST"])
@@ -115,18 +118,13 @@ def register():
 
 
 @app.route("/profile", methods=["GET", "POST"])
+@login_required
 def profile():
-    if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.username, current_user.email, current_user.profile_pic
-            )
-        )
+    if request.method == "GET":
+        return render_template("profile.html")
     else:
-        return render_template("error.html", message="This page is still in development.", address="/")
+        logout_user()
+        return redirect("/")
 
 if __name__ == "__main__":
    app.run(debug=True)
