@@ -11,6 +11,7 @@ def get_db():
         if not g.db.execute("SELECT sql FROM sqlite_master WHERE type = \'table\' AND name = \'users\'").fetchone():
             table_sql = open("static/schema.sql").read()
             g.db.execute(table_sql)
+            print("Database and table initialized")
     return g.db
 
 def close_db():
