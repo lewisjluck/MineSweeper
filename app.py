@@ -63,10 +63,6 @@ def scores():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    user = User.sign_in(3, "Lewis", "lewisluck2003@gmail.com", "http://tolkiengateway.net/w/images/thumb/1/15/Born_of_Hope_-_Arathorn.jpg/250px-Born_of_Hope_-_Arathorn.jpg")
-    login_user(user)
-    print(user.profile_pic)
-    print(current_user.profile_pic)
     return render_template("login.html")
 
 @app.route("/login/call", methods=["GET", "POST"])

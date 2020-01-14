@@ -61,6 +61,14 @@ main {
   max-height: 80%;
 }
 
+#button_group {
+  width: 100%;
+}
+
+.login_button {
+  width: 50%;
+}
+
 .grid {
   cursor: auto;
   width: 80vmin;
