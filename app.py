@@ -9,6 +9,8 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+from werkzeug.security import generate_password_hash, check_password_hash
+import yagmail
 
 # Standard libraries
 import os
@@ -61,10 +63,6 @@ def play():
 def scores():
     return render_template("error.html", message="This page is still in development.", address="/")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    return render_template("login.html")
-
 @app.route("/login/call", methods=["GET", "POST"])
 def call():
     cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -105,16 +103,47 @@ def callback():
     else:
         return render_template("error.html", message="User email not available or not verified by Google.", address="/login")
     print(unique_id, users_name, users_email, picture)
-    login_user(User.sign_in(unique_id, users_name, users_email, picture))
+    login_user(User.sign_in(users_name, users_email, picture, unique_id))
     return redirect("/profile")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("error.html", message="This page is still in development.", address="/")
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        print("register called")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        email = request.form.get("email")
+        if not (username and password and email):
+            print("Invalid entries")
+            return render_template("error.html", message="Please enter a valid email, username and password to sign up.", address="/register")
+        user = User.check_username(username)
+        if user:
+            print("Already exists")
+            return render_template("error.html", message="Another account already uses this username.", address="/register")
+        else:
+            User.create(username, email, hash=generate_password_hash(password))
+            print(user)
+            print("Created user")
+            login_user(user)
+            yagmail.SMTP("lewisjluck@gmail.com").send(to=user.email, subject="Thanks for signing up to Minesweeper!", contents=f"Hi, {{user.username}}. Thanks for signing up to Minesweeper! We hope to see you playing soon!")
+            return redirect("/profile")
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if not (username and password):
+            return render_template("error.html", message="Please enter a valid username and password to login.", address="/login")
+        user = User.check_username(username)
+        if user and check_password_hash(user.hash, password):
+            login_user(user)
 
 @app.route("/profile", methods=["GET", "POST"])
-@login_required
 def profile():
     if request.method == "GET":
         return render_template("profile.html")

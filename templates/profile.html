@@ -5,7 +5,7 @@
 {% block body %}
   <div class="profile_box">
     {% if current_user.profile_pic %}
-    <img src="{{current_user.profile_pic}}" alt="Profile Picture">
+      <img src="{{current_user.profile_pic}}" alt="Profile Picture">
     {% endif %}
     <h1>{{current_user.username}}</h1>
     <h3>Email - {{current_user.email}}</h3>

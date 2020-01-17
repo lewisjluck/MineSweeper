@@ -15,9 +15,9 @@
       <div class="row">
         {% for j in range(d) %}
           {% if j%2 == i%2 %}
-            <div class="col-sm d inplay" id="{{i * d + j}}"></div>
+            <div class="tile col-sm d inplay" id="{{i * d + j}}"></div>
           {% else %}
-            <div class="col-sm g inplay" id="{{i * d + j}}"></div>
+            <div class="tile col-sm g inplay" id="{{i * d + j}}"></div>
           {% endif %}
         {% endfor %}
       </div>

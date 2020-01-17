@@ -1,7 +1,8 @@
 CREATE TABLE users (
-  id TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   username TEXT NOT NULL,
   email TEXT NOT NULL,
-  profile_pic TEXT NOT NULL,
-  hash TEXT
+  profile_pic TEXT,
+  hash TEXT,
+  google_id TEXT
 );
