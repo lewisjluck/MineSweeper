@@ -43,7 +43,7 @@ class User(UserMixin):
         db = get_db()
         db.commit()
         db.execute("INSERT INTO users (username, email, profile_pic, hash, google_id) VALUES (?, ?, ?, ?, ?)", (username, email, profile_pic, hash, google_id,))
-        user = User.check_username(username)
+        user = User.check_email(email)
         print(user.username, "Created and returned")
         db.commit()
         return user
@@ -51,15 +51,16 @@ class User(UserMixin):
     @staticmethod
     def sign_in(username, email, pic, id):
         print(username, email, pic, id, "sign_in called")
-        if not User.get(id):
-            id = User.create(username, email, pic, google_id=id)
-        return User.check_username(username)
+        user = User.get(id)
+        if not user:
+            user = User.create(username, email, pic, google_id=id)
+        return user
 
     @staticmethod
-    def check_username(username):
+    def check_email(email):
         db = get_db()
         db.commit()
-        result = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
+        result = db.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
         if result:
             return User.get(result[0])
         else:

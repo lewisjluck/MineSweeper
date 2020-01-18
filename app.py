@@ -115,15 +115,14 @@ def register():
         email = request.form.get("email")
         if not (username and password and email):
             return render_template("error.html", message="Please enter a valid email, username and password to sign up.", address="/register")
-        user = User.check_username(username)
+        user = User.check_email(email)
         print(user)
         if user:
             return render_template("error.html", message="Another account already uses this username.", address="/register")
         elif password != confirm:
             return render_template("error.html", message="Your passwords did not match.", address="/register")
         else:
-            User.create(username, email, hash=generate_password_hash(password))
-            login_user(User.check_username(username))
+            login_user(User.create(username, email, hash=generate_password_hash(password)))
             return redirect("/profile")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -131,11 +130,11 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
     else:
-        username = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
-        if not (username and password):
-            return render_template("error.html", message="Please enter a valid username and password to login.", address="/login")
-        user = User.check_username(username)
+        if not (email and password):
+            return render_template("error.html", message="Please enter a valid email and password to login.", address="/login")
+        user = User.check_email(email)
         if not user:
             return render_template("error.html", message="Doesn't look like we have that account. Sign up with the below link.", address="/register")
         if check_password_hash(user.hash, password):

@@ -148,6 +148,21 @@ label {
   color: white;
 }
 
+.profile-pic {
+  width: 40vmin;
+  height: 40vmin;
+  border-radius: 50vmin;
+  margin: auto;
+  border: solid rgb(52, 58, 54) 3px;
+}
+
+.profile-box {
+  border: solid 10px rgb(52, 58, 54);
+  width: 50%;
+  margin: auto;
+  padding: 10px;
+}
+
 form {
   width: 70%;
   margin: auto;

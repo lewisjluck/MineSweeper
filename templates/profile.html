@@ -3,13 +3,19 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-  <div class="profile_box">
+  <div class="profile-box">
     {% if current_user.profile_pic %}
-      <img src="{{current_user.profile_pic}}" alt="Profile Picture">
+      <img class="profile-pic" src="{{current_user.profile_pic}}" alt="">
+    {% else %}
+      <img class="profile-pic" src="../static/profiles/empty.jpg" alt="">
     {% endif %}
-    <h1>{{current_user.username}}</h1>
-    <h3>Email - {{current_user.email}}</h3>
     <form class="" action="/profile" method="post">
+      <input type="file" name="profile_pic" class="form-control-file">
+      <div class="form-group">
+
+      </div>
+      <h1>{{current_user.username}}</h1>
+      <h3>Email - {{current_user.email}}</h3>
       <button class="btn btn-dark"type="submit" name="button">Log Out</button>
     </form>
   </div>

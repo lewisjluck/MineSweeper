@@ -1,0 +1,6 @@
+CREATE TABLE scores {
+  id INTEGER PRIMARY KEY AUTOINCRMENT NOT NULL,
+  user_id TEXT NOT NULL,
+  score TEXT NOT NULL,
+  difficulty TEXT NOT NULL
+}
