@@ -111,22 +111,18 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     else:
-        print("register called")
         username = request.form.get("username")
         password = request.form.get("password")
         email = request.form.get("email")
         if not (username and password and email):
-            print("Invalid entries")
             return render_template("error.html", message="Please enter a valid email, username and password to sign up.", address="/register")
         user = User.check_username(username)
+        print(user)
         if user:
-            print("Already exists")
             return render_template("error.html", message="Another account already uses this username.", address="/register")
         else:
             User.create(username, email, hash=generate_password_hash(password))
-            print(user)
-            print("Created user")
-            login_user(user)
+            login_user(User.check_username(username))
             yagmail.SMTP("lewisjluck@gmail.com").send(to=user.email, subject="Thanks for signing up to Minesweeper!", contents=f"Hi, {{user.username}}. Thanks for signing up to Minesweeper! We hope to see you playing soon!")
             return redirect("/profile")
 
@@ -137,11 +133,15 @@ def login():
     else:
         username = request.form.get("username")
         password = request.form.get("password")
+        password_confirm = request.form.get("confirm")
         if not (username and password):
             return render_template("error.html", message="Please enter a valid username and password to login.", address="/login")
         user = User.check_username(username)
         if user and check_password_hash(user.hash, password):
             login_user(user)
+            return redirect("/profile")
+        else:
+            return render_template("error.html", message="Incorrect Password.", address="/login")
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():

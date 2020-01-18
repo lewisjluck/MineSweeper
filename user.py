@@ -3,7 +3,7 @@ import sqlite3
 from db import get_db, close_db
 
 class User(UserMixin):
-    def __init__(self, id_, username, email, profile_pic, hash, google_id):
+    def __init__(self, id_, username, email, profile_pic=None, hash=None, google_id=None):
         self.id = id_
         self.username = username
         self.email = email
@@ -14,9 +14,9 @@ class User(UserMixin):
     @staticmethod
     def get(user_id):
         db = get_db()
-        google_user = db.execute("SELECT * FROM users WHERE google_id = ?", (user_id,)).fetchone()
+        google_user = db.execute("SELECT * FROM users WHERE google_id = ?", (str(user_id),)).fetchone()
         if not google_user:
-            user = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+            user = db.execute("SELECT * FROM users WHERE id = ?", (str(user_id),)).fetchone()
             if not user:
                 return None
             else:
@@ -46,7 +46,6 @@ class User(UserMixin):
         db.execute("INSERT INTO users (username, email, profile_pic, hash, google_id) VALUES (?, ?, ?, ?, ?)", (username, email, profile_pic, hash, google_id,))
         user = User.check_username(username)
         db.commit()
-        close_db()
         return user
 
     @staticmethod
@@ -59,9 +58,10 @@ class User(UserMixin):
     def check_username(username):
         db = get_db()
         db.commit()
-        result = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchall()
-        close_db()
+        result = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
+        print(result[0])
         if len(result) > 0:
+            print(User.get(result[0]))
             return User.get(result[0])
         else:
             return None
