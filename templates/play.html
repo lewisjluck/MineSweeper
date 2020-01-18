@@ -15,9 +15,9 @@
       <div class="row">
         {% for j in range(d) %}
           {% if j%2 == i%2 %}
-            <div class="col-sm d inplay" id="{{i * d + j}}"></div>
+            <div class="tile col-sm d inplay" id="{{i * d + j}}"></div>
           {% else %}
-            <div class="col-sm g inplay" id="{{i * d + j}}"></div>
+            <div class="tile col-sm g inplay" id="{{i * d + j}}"></div>
           {% endif %}
         {% endfor %}
       </div>
@@ -56,7 +56,9 @@
           timer = 1;
           timing = setInterval(function () {
             $("#timer").text(timer.toString());
-            timer ++;
+            if (!(timer > 999)) {
+                timer ++;
+            }
           }, 1000);
         }
         id = $(this).attr("id")
@@ -99,7 +101,7 @@
             stopped = true;
             clearInterval(timing);
             time = $("#timer").text();
-            presentMessage("Congratulations! <br> You won with a score of " + time + "!");
+            presentMessage("Congratulations! <br> You won with a time of " + time + "seconds!");
           }
         }
       }
@@ -121,7 +123,7 @@
           stopped = true;
           clearInterval(timing);
           time = $("#timer").text();
-          presentMessage("Congratulations! <br> You won with a score of " + time + "!");
+          presentMessage("Congratulations! <br> You won with a time of " + time + "seconds!");
         }
       }
     });

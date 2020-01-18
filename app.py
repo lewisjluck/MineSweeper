@@ -1,5 +1,5 @@
 # Flask libraries
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, redirect
 from flask_login import (
     LoginManager,
     current_user,
@@ -9,7 +9,7 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
-
+from werkzeug.security import generate_password_hash, check_password_hash
 # Standard libraries
 import os
 import sqlite3
@@ -61,14 +61,6 @@ def play():
 def scores():
     return render_template("error.html", message="This page is still in development.", address="/")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    user = User.sign_in(3, "Lewis", "lewisluck2003@gmail.com", "http://tolkiengateway.net/w/images/thumb/1/15/Born_of_Hope_-_Arathorn.jpg/250px-Born_of_Hope_-_Arathorn.jpg")
-    login_user(user)
-    print(user.profile_pic)
-    print(current_user.profile_pic)
-    return render_template("login.html")
-
 @app.route("/login/call", methods=["GET", "POST"])
 def call():
     cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -109,13 +101,48 @@ def callback():
     else:
         return render_template("error.html", message="User email not available or not verified by Google.", address="/login")
     print(unique_id, users_name, users_email, picture)
-    login_user(User.sign_in(unique_id, users_name, users_email, picture))
+    login_user(User.sign_in(users_name, users_email, picture, unique_id))
     return redirect("/profile")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("error.html", message="This page is still in development.", address="/")
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        email = request.form.get("email")
+        if not (username and password and email):
+            return render_template("error.html", message="Please enter a valid email, username and password to sign up.", address="/register")
+        user = User.check_username(username)
+        print(user)
+        if user:
+            return render_template("error.html", message="Another account already uses this username.", address="/register")
+        elif password != confirm:
+            return render_template("error.html", message="Your passwords did not match.", address="/register")
+        else:
+            User.create(username, email, hash=generate_password_hash(password))
+            login_user(User.check_username(username))
+            return redirect("/profile")
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if not (username and password):
+            return render_template("error.html", message="Please enter a valid username and password to login.", address="/login")
+        user = User.check_username(username)
+        if not user:
+            return render_template("error.html", message="Doesn't look like we have that account. Sign up with the below link.", address="/register")
+        if check_password_hash(user.hash, password):
+            login_user(user)
+            return redirect("/profile")
+        else:
+            return render_template("error.html", message="Incorrect Password.", address="/login")
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -125,6 +152,10 @@ def profile():
     else:
         logout_user()
         return redirect("/")
+
+@app.route("/error")
+def error():
+    return render_template("error.html", message="Sorry, you have to be logged in to access this page", address="/login")
 
 if __name__ == "__main__":
    app.run(debug=True)
