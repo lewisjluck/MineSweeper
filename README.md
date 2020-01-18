@@ -1,5 +1,5 @@
 # MineSweeper
-A hobbyists attempted delve into simple, web-hosted arcade game development.
+A hobbyist's attempted delve into simple, web-hosted arcade game development.
 ## Features
 ## Quick Start
 #### Online Use
